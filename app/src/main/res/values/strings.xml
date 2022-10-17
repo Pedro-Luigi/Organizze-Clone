@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Organizze Clone</string>
+    <string name="txt_forgotpass">Esqueci a senha!</string>
+    <string name="txt_register">Cadastrar</string>
+</resources>

@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.SliderActivity">
+
+    <androidx.constraintlayout.motion.widget.MotionLayout
+        android:id="@+id/constraintLayout"
+        android:layout_width="match_parent"
+        android:layout_height="500dp"
+        app:layoutDescription="@xml/activity_slider_xml_constraintlayout_scene"
+        app:layout_constraintBottom_toTopOf="@+id/btn_next"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/rv_photo_one"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:rotationY="30"
+            android:elevation="1dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/um" />
+
+        <TextView
+            android:id="@+id/tv_title_description"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:textSize="24sp"
+            android:gravity="center"
+            android:textAlignment="center"
+            android:fontFamily="sans-serif-black"
+            android:paddingHorizontal="32dp"
+            app:layout_constraintBottom_toTopOf="@id/tv_description"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_description"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:fontFamily="sans-serif"
+            android:gravity="center"
+            android:textAlignment="center"
+            android:paddingHorizontal="32dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"/>
+
+        <ImageView
+            android:id="@+id/rv_photo_two"
+            android:layout_width="300dp"
+            android:layout_height="300dp"
+            android:scaleType="fitCenter"
+            android:elevation="2dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/logo_organizze"/>
+
+        <ImageView
+            android:id="@+id/rv_photo_three"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:rotationY="-30"
+            android:elevation="1dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/tres"/>
+
+        <ImageView
+            android:id="@+id/rv_photo_four"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:rotationY="-30"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/quatro"/>
+
+        <androidx.constraintlayout.helper.widget.Carousel
+            android:id="@+id/carousel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:carousel_backwardTransition="@+id/backward"
+            app:carousel_forwardTransition="@+id/forward"
+            app:carousel_infinite="true"
+            app:carousel_nextState="@+id/next"
+            app:carousel_previousState="@+id/previous"
+            app:constraint_referenced_ids="rv_photo_one,rv_photo_two,rv_photo_three, rv_photo_four" />
+
+    </androidx.constraintlayout.motion.widget.MotionLayout>
+
+    <ImageView
+        android:id="@+id/iv_arrow"
+        android:layout_width="60dp"
+        android:layout_height="30dp"
+        android:layout_margin="16dp"
+        android:scaleType="centerCrop"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@drawable/ic_arrow" />
+
+    <Button
+        android:id="@+id/btn_next"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Pular"
+        android:layout_margin="16dp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

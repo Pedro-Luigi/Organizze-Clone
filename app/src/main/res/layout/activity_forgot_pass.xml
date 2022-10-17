@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.ForgotPassActivity">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/iv_logo_forgotpass"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:padding="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/logo_organizze" />
+
+    <TextView
+        android:id="@+id/tv_forgot_pass_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/txt_forgotpass"
+        style="@style/custom_title"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/iv_logo_forgotpass"/>
+
+    <TextView
+        android:id="@+id/tv_forgot_pass_desc"
+        style="@style/text_default"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Insira o seu e-mail abaixo para receber um link de recuperação. A chegado do e-mail pode demorar alguns minutos."
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_forgot_pass_title" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/til_email_forgotpass"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="@style/til_editText"
+        android:hint="E-mail"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_forgot_pass_desc">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textEmailAddress" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <Button
+        android:id="@+id/btn_forgotpass"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Acessar"
+        style="@style/custom_button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/til_email_forgotpass" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

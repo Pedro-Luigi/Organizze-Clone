@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "279291222560",
+    "project_id": "organizze-clone-android",
+    "storage_bucket": "organizze-clone-android.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:279291222560:android:026d4db7b50371f5e43a45",
+        "android_client_info": {
+          "package_name": "com.courseudemy.organizzeclone"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "279291222560-ei3lhcbc4ffhbc4on04skhkamu1flft9.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.courseudemy.organizzeclone",
+            "certificate_hash": "513c60d6e6f978a8ee9255c49fab4865c8e8529d"
+          }
+        },
+        {
+          "client_id": "279291222560-2i5h02sm0fq7ba1p8lud8ou6re8qnojj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDdzmPhyYYqHasqYGoZamLSg3-kMk-utvQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "279291222560-2i5h02sm0fq7ba1p8lud8ou6re8qnojj.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

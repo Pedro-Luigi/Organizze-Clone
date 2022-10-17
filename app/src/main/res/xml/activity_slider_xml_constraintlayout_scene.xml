@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<MotionScene xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:motion="http://schemas.android.com/apk/res-auto">
+
+    <ConstraintSet android:id="@+id/next">
+        <Constraint
+            android:id="@+id/rv_photo_two"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:paddingVertical="10dp"
+            android:paddingStart="16dp"
+            android:rotationY="30"
+            android:scaleType="centerCrop"
+            motion:layout_constraintBottom_toBottomOf="parent"
+            motion:layout_constraintStart_toStartOf="parent"
+            motion:layout_constraintTop_toTopOf="parent" />
+        <Constraint
+            android:id="@+id/rv_photo_one"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:rotationY="-60"
+            android:scaleType="centerCrop"
+            motion:layout_constraintBottom_toBottomOf="parent"
+            motion:layout_constraintEnd_toEndOf="parent"
+            motion:layout_constraintStart_toStartOf="parent"
+            motion:layout_constraintTop_toTopOf="parent" />
+        <Constraint
+            android:id="@+id/rv_photo_four"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:paddingVertical="10dp"
+            android:rotationY="-30"
+            android:scaleType="fitCenter"
+            motion:layout_constraintBottom_toBottomOf="parent"
+            motion:layout_constraintEnd_toEndOf="parent"
+            motion:layout_constraintTop_toTopOf="parent"/>
+
+        <Constraint
+            android:id="@+id/rv_photo_three"
+            android:layout_width="300dp"
+            android:layout_height="300dp"
+            motion:layout_constraintBottom_toBottomOf="parent"
+            motion:layout_constraintEnd_toEndOf="parent"
+            motion:layout_constraintStart_toStartOf="parent"
+            motion:layout_constraintTop_toTopOf="parent" />
+
+    </ConstraintSet>
+
+    <ConstraintSet android:id="@id/start">
+
+        <Constraint
+        android:id="@+id/rv_photo_three"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:rotationY="-30"
+        android:layout_marginEnd="10dp"
+        android:scaleType="centerCrop"
+        motion:layout_constraintBottom_toBottomOf="parent"
+        motion:layout_constraintEnd_toEndOf="parent"
+        motion:layout_constraintTop_toTopOf="parent"  />
+
+        <Constraint
+        android:id="@+id/rv_photo_one"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:rotationY="30"
+        android:layout_marginStart="10dp"
+        android:scaleType="centerCrop"
+        motion:layout_constraintBottom_toBottomOf="parent"
+        motion:layout_constraintStart_toStartOf="parent"
+        motion:layout_constraintTop_toTopOf="parent"  />
+
+        <Constraint
+            android:id="@id/rv_photo_four"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:scaleType="centerCrop"
+            motion:layout_constraintBottom_toBottomOf="parent"
+            motion:layout_constraintEnd_toEndOf="parent"
+            motion:layout_constraintStart_toStartOf="parent"
+            motion:layout_constraintTop_toTopOf="parent"
+            />
+
+
+    </ConstraintSet>
+    <ConstraintSet android:id="@+id/previous">
+        <Constraint
+            android:id="@+id/rv_photo_one"
+            android:layout_width="300dp"
+            android:layout_height="300dp"
+            android:elevation="2dp"
+            motion:layout_constraintBottom_toBottomOf="parent"
+            motion:layout_constraintEnd_toEndOf="parent"
+            motion:layout_constraintStart_toStartOf="parent"
+            motion:layout_constraintTop_toTopOf="parent" />
+
+        <Constraint
+            android:id="@+id/rv_photo_two"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:paddingVertical="10dp"
+            android:paddingStart="16dp"
+            android:rotationY="-30"
+            android:scaleType="centerCrop"
+            motion:layout_constraintBottom_toBottomOf="parent"
+            motion:layout_constraintEnd_toEndOf="parent"
+            motion:layout_constraintTop_toTopOf="parent" />
+
+        <Constraint
+            android:id="@+id/rv_photo_three"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:rotationY="60"
+            android:scaleType="centerCrop"
+            motion:layout_constraintBottom_toBottomOf="parent"
+            motion:layout_constraintEnd_toEndOf="parent"
+            motion:layout_constraintStart_toStartOf="parent"
+            motion:layout_constraintTop_toTopOf="parent"  />
+
+        <Constraint
+            android:id="@+id/rv_photo_four"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:paddingVertical="10dp"
+            android:paddingStart="16dp"
+            android:rotationY="30"
+            android:scaleType="centerCrop"
+            motion:layout_constraintBottom_toBottomOf="parent"
+            motion:layout_constraintStart_toStartOf="parent"
+            motion:layout_constraintTop_toTopOf="parent" />
+
+    </ConstraintSet>
+
+    <Transition
+        android:id="@+id/forward"
+        motion:constraintSetEnd="@+id/next"
+        motion:constraintSetStart="@id/start"
+        motion:duration="1000">
+        <OnSwipe
+            motion:dragDirection="dragLeft"
+            motion:touchAnchorSide="left" />
+    </Transition>
+
+    <Transition
+        android:id="@+id/backward"
+        motion:constraintSetEnd="@+id/previous"
+        motion:constraintSetStart="@+id/start">
+        <OnSwipe
+            motion:dragDirection="dragRight"
+            motion:touchAnchorSide="right" />
+    </Transition>
+</MotionScene>
