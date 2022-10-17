@@ -50,6 +50,7 @@ class LoginActivity : AppCompatActivity() {
                 )?.addOnCompleteListener {
                     if (it.isSuccessful){
                         Toast.makeText(this, "Usuário logado", Toast.LENGTH_SHORT).show()
+                        openHome()
                     } else {
                         val erroMessage: String
                         try {
@@ -67,5 +68,10 @@ class LoginActivity : AppCompatActivity() {
                 }
             }
         }
+    }
+
+    fun openHome(){
+        startActivity(Intent(this, HomeActivity::class.java))
+        finish()
     }
 }
