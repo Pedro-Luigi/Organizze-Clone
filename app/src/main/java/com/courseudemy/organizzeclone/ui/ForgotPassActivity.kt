@@ -18,4 +18,5 @@ class ForgotPassActivity : AppCompatActivity() {
         supportActionBar?.title = ""
 
     }
+    
 }

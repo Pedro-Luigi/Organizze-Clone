@@ -88,20 +88,15 @@ class RegisterActivity : AppCompatActivity() {
                     } catch (e: FirebaseAuthUserCollisionException) {
                         erroMessage = "Essa conta já foi cadastrada"
                     } catch (e: Exception) {
-                        erroMessage = "ao cadastrar usuário: " + e.message
+                        erroMessage = "Erro ao cadastrar usuário: " + e.message
                         e.printStackTrace()
                     }
                     Toast.makeText(this, "Erro: $erroMessage", Toast.LENGTH_SHORT).show()
                 }
             }
         } else {
-            if (pass.text.contains(symbols).not()) {
-                    pass.error =
-                        "A senha possui um símbolo inválido"
-                } else {
                 pass.error =
-                    "Senha precisar conter números,letras (maiúsculas e minúsculas) e símbolos!"
-            }
+                    "Senha precisar conter números,letras (maiúsculas e minúsculas) e símbolos $symbols!"
         }
     }
 }
