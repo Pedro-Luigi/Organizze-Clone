@@ -95,7 +95,13 @@ class RegisterActivity : AppCompatActivity() {
                 }
             }
         } else {
-            pass.error = "Senha precisar conter números,letras (maiúsculas e minúsculas) e símbolos!"
+            if (pass.text.contains(symbols).not()) {
+                    pass.error =
+                        "A senha possui um símbolo inválido"
+                } else {
+                pass.error =
+                    "Senha precisar conter números,letras (maiúsculas e minúsculas) e símbolos!"
+            }
         }
     }
 }
