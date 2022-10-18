@@ -9,11 +9,14 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.helper.widget.Carousel
 import com.courseudemy.organizzeclone.R
 import com.courseudemy.organizzeclone.databinding.ActivitySliderBinding
+import com.courseudemy.organizzeclone.util.SettingsFirebase
+import com.google.firebase.auth.FirebaseAuth
 
 
 class SliderActivity : AppCompatActivity() {
 
     private val binding by lazy { ActivitySliderBinding.inflate(layoutInflater) }
+    private var authentication: FirebaseAuth? = null
     private var images = intArrayOf(R.drawable.um, R.drawable.dois, R.drawable.tres, R.drawable.quatro)
     private var titulo = arrayListOf("Saiba para onde está indo seu dinheiro",
                                      "Organize suas contas de onde estiver",
@@ -28,6 +31,11 @@ class SliderActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
+
+        authentication = SettingsFirebase().getFirebaseAuth()
+        if (authentication?.currentUser != null) {
+            startActivity(Intent(this, HomeActivity::class.java))
+        }
 
         //iniciando texto padrão
         binding.tvTitleDescription.text = "Bem Vindo ao Organizze"
@@ -61,6 +69,7 @@ class SliderActivity : AppCompatActivity() {
 
         binding.btnNext.setOnClickListener {
             startActivity(Intent(this, LoginActivity::class.java))
+            finish()
         }
     }
 }

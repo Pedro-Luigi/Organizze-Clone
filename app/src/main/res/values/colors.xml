@@ -8,4 +8,12 @@
     <color name="secondaryDarkColor">#00cbcc</color>
     <color name="primaryTextColor">#FFFFFF</color>
     <color name="secondaryTextColor">#000000</color>
+
+    <color name="ColorExpense">#f44336</color>
+    <color name="LightColorExpense">#ff7961</color>
+    <color name="DarkColorExpense">#ba000d</color>
+
+    <color name="ColorProfit">#4caf50</color>
+    <color name="LightColorProfit">#80e27e</color>
+    <color name="DarkColorProfit">#087f23</color>
 </resources>
