@@ -6,7 +6,9 @@ import android.os.Bundle
 import android.widget.EditText
 import android.widget.Toast
 import com.courseudemy.organizzeclone.databinding.ActivityRegisterBinding
-import com.courseudemy.organizzeclone.domain.user
+import com.courseudemy.organizzeclone.domain.SaveUserDB
+import com.courseudemy.organizzeclone.domain.User
+import com.courseudemy.organizzeclone.util.SaveUserFirebase
 import com.courseudemy.organizzeclone.util.SettingsFirebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
@@ -17,7 +19,7 @@ class RegisterActivity : AppCompatActivity() {
 
     private val binding by lazy { ActivityRegisterBinding.inflate(layoutInflater) }
     private var authentication: FirebaseAuth? = null
-    private var user: user? = null
+    private var user: User? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -61,7 +63,7 @@ class RegisterActivity : AppCompatActivity() {
         } else if (pass.text.contains(symbols) && pass.text.contains(letterUpper) &&
             pass.text.contains(letterLower) && pass.text.contains(numbers)
         ) {
-            user = user(
+            user = User(
                 binding.tilNameRegister.editText?.text.toString(),
                 binding.tilEmailRegister.editText?.text.toString(),
                 binding.tilPasswordRegister.editText?.text.toString()
@@ -74,9 +76,12 @@ class RegisterActivity : AppCompatActivity() {
                 user!!.password
             )?.addOnCompleteListener {
                 if (it.isSuccessful) {
-                    Toast.makeText(this, "Cadastro realizado com sucesso", Toast.LENGTH_SHORT)
+                    //Salvando usuário no firebase.
+                    SaveUserFirebase().saveUser(user!!.name, user!!.email)
+
+                    Toast.makeText(this, "Cadastro realizado com sucesso.", Toast.LENGTH_SHORT)
                         .show()
-                    startActivity(Intent(this, LoginActivity::class.java))
+                    startActivity(Intent(this, HomeActivity::class.java))
                 } else {
                     val erroMessage: String
                     try {

@@ -1,25 +1,21 @@
 package com.courseudemy.organizzeclone.ui
 
 import android.content.Intent
-import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.EditText
 import android.widget.Toast
 import com.courseudemy.organizzeclone.databinding.ActivityLoginBinding
-import com.courseudemy.organizzeclone.domain.user
+import com.courseudemy.organizzeclone.domain.User
 import com.courseudemy.organizzeclone.util.SettingsFirebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.FirebaseAuthInvalidUserException
-import com.google.firebase.auth.FirebaseAuthUserCollisionException
-import com.google.firebase.auth.FirebaseAuthWeakPasswordException
 
 class LoginActivity : AppCompatActivity() {
 
     private val binding by lazy { ActivityLoginBinding.inflate(layoutInflater) }
     private var authentication: FirebaseAuth? = null
-    var user:user? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,10 +40,10 @@ class LoginActivity : AppCompatActivity() {
             } else {
                 binding.tilEmail.error = null
                 binding.tilPass.error = null
-                user = user("", email.text.toString(), pass.text.toString())
+
                 authentication = SettingsFirebase().getFirebaseAuth()
                 authentication?.signInWithEmailAndPassword(
-                    user!!.email, user!!.password
+                    email.text.toString(), pass.text.toString()
                 )?.addOnCompleteListener {
                     if (it.isSuccessful){
                         Toast.makeText(this, "Usuário logado", Toast.LENGTH_SHORT).show()

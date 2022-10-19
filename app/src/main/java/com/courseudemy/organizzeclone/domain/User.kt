@@ -1,7 +1,10 @@
 package com.courseudemy.organizzeclone.domain
 
-data class user(
+import com.google.firebase.database.Exclude
+
+data class User(
     val name: String,
     val email: String,
+    @Exclude
     val password:String
 )
