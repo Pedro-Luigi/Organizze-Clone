@@ -1,5 +1,6 @@
 package com.courseudemy.organizzeclone.ui
 
+import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import com.google.android.material.snackbar.Snackbar
@@ -40,11 +41,23 @@ class HomeActivity : AppCompatActivity() {
 //
 ////                    authentication?.signOut()
 //        }
+
+        openActionScreen()
+
     }
 
     override fun onSupportNavigateUp(): Boolean {
         val navController = findNavController(R.id.nav_host_fragment_content_home)
         return navController.navigateUp(appBarConfiguration)
                 || super.onSupportNavigateUp()
+    }
+
+    fun openActionScreen(){
+        binding.fabProfit.setOnClickListener {
+            startActivity(Intent(this, ProfitActivity::class.java))
+        }
+        binding.fabExpense.setOnClickListener {
+            startActivity(Intent(this, ExpenseActivity::class.java))
+        }
     }
 }

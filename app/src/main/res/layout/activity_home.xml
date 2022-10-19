@@ -40,15 +40,17 @@
             android:layout_height="wrap_content"
             android:src="@drawable/ic_plus"
             app:fab_colorNormal="@color/ColorProfit"
+            app:fab_colorPressed="@color/DarkColorProfit"
             app:fab_size="mini"
             app:fab_label="Lucro" />
-        
+
         <com.github.clans.fab.FloatingActionButton
             android:id="@+id/fab_expense"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/ic_neg"
             app:fab_colorNormal="@color/ColorExpense"
+            app:fab_colorPressed="@color/DarkColorExpense"
             app:fab_size="mini"
             app:fab_label="Despesa" />
 

@@ -22,4 +22,18 @@
     <style name="Theme.OrganizzeClone.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="Theme.OrganizzeClone.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <style name="ProfitTheme" parent="Theme.Material3.Light.NoActionBar">
+        <!-- Primary brand color. -->
+        <item name="colorPrimary">@color/ColorProfit</item>
+        <item name="colorPrimaryVariant">@color/DarkColorProfit</item>
+        <item name="colorAccent">@color/LightColorProfit</item>
+    </style>
+
+    <style name="ExpenseTheme" parent="Theme.Material3.Light.NoActionBar">
+        <!-- Primary brand color. -->
+        <item name="colorPrimary">@color/ColorExpense</item>
+        <item name="colorPrimaryVariant">@color/DarkColorExpense</item>
+        <item name="colorAccent">@color/LightColorExpense</item>
+    </style>
 </resources>
