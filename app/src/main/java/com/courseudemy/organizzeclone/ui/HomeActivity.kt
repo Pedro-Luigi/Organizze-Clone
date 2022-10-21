@@ -3,6 +3,7 @@ package com.courseudemy.organizzeclone.ui
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
@@ -10,6 +11,11 @@ import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import com.courseudemy.organizzeclone.R
 import com.courseudemy.organizzeclone.databinding.ActivityHomeBinding
+import com.courseudemy.organizzeclone.domain.Transition
+import com.courseudemy.organizzeclone.domain.User
+import com.courseudemy.organizzeclone.model.ListItemCategory
+import com.courseudemy.organizzeclone.util.PullDataFirebase
+import com.courseudemy.organizzeclone.util.SaveUserFirebase
 import com.courseudemy.organizzeclone.util.SettingsFirebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
@@ -24,6 +30,11 @@ class HomeActivity : AppCompatActivity() {
     private var authentication: FirebaseAuth? = null
     private var mDatabase: DatabaseReference? = null
     private val TAG = "ERROR"
+    companion object{
+        var name:String? =null
+        var allExpense:Double? = null
+        var allProfit:Double? = null
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,11 +57,22 @@ class HomeActivity : AppCompatActivity() {
 //
 ////                    authentication?.signOut()
 //        }
-
         authentication = SettingsFirebase().getFirebaseAuth()
         mDatabase = SettingsFirebase().getFirebaseDataBase()
+
         //Ouvindo dados do firebase.
-        getDataFirebase()
+//        getDataFirebase()
+
+        //Soó funciona se eu clicar em uma view! Merda.
+        binding.teste.setOnClickListener {
+            PullDataFirebase().getAllProfit("name")
+            PullDataFirebase().getAllProfit("allProfit")
+            PullDataFirebase().getAllProfit("allExpense")
+            binding.teste.text = allProfit.toString()
+            binding.teste2.text = allExpense.toString()
+            binding.toolbar.title = "Olá, $name"
+            binding.teste.text = allProfit?.minus(allExpense!!).toString()
+        }
 
         binding.ivExit.setOnClickListener {
             authentication?.signOut()
@@ -61,27 +83,46 @@ class HomeActivity : AppCompatActivity() {
 
     }
 
-    fun getDataFirebase(){
-        mDatabase!!.addValueEventListener(object : ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                // This method is called once with the initial value and again
-                // whenever data at this location is updated.
-                val value = dataSnapshot.getValue()
-            }
+    //TODO SE DER CERTO, coloque a responsabilidade para a classe
+    private fun getDataFirebase(){
+            val firebase = mDatabase!!.child("usuarios").child(authentication?.uid.toString())
+            mDatabase!!.addValueEventListener(object : ValueEventListener {
+                override fun onDataChange(dataSnapshot: DataSnapshot) {
+                    dataSnapshot.value
+                }
 
-            override fun onCancelled(error: DatabaseError) {
-                // Failed to read value
-                Log.w(TAG, "Failed to read value.", error.toException())
-            }
-        })
+                override fun onCancelled(error: DatabaseError) {
+                    Toast.makeText(
+                        this@HomeActivity,
+                        "Failed to read value. ${error.toException()}",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            })
 
-        mDatabase!!.child("usuarios").child(authentication?.uid.toString())
-            .child("name").get().addOnSuccessListener {
+            //Busca nome do usuário.
+            firebase.child("name").get().addOnSuccessListener {
                 binding.toolbar.title = "Olá, ${it.value.toString()}"
             }.addOnFailureListener {
-                binding.toolbar.title = "Olá"
                 Log.w(TAG, "Failed to read value.", error(it))
             }
+
+            //Busca gasto total do usuário.
+            firebase.child("allExpense").get().addOnSuccessListener {
+                binding.teste.text = it.value.toString()
+                allExpense = it.value.toString().toDouble()
+            }.addOnFailureListener {
+                Log.w(TAG, "Failed to read value.", error(it))
+            }
+
+            //Busca lucro total do usuário.
+            firebase.child("allProfit").get().addOnSuccessListener {
+                binding.teste2.text = it.value.toString()
+                allProfit = it.value.toString().toDouble()
+            }.addOnFailureListener {
+                Log.w(TAG, "Failed to read value.", error(it))
+            }
+
     }
 
     override fun onSupportNavigateUp(): Boolean {
