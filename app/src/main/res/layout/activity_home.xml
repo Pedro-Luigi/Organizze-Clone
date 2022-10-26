@@ -219,5 +219,27 @@
         app:layout_constraintTop_toBottomOf="@+id/fab_searce"
         app:layout_constraintVertical_bias="0.8" />
 
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/chip_source_category"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/fab_margin"
+        android:hint="Categoria"
+        android:elevation="2dp"
+        app:boxBackgroundColor="@color/primaryDarkColor"
+        app:layout_constraintBottom_toBottomOf="@+id/constraintLayout3"
+        app:layout_constraintEnd_toStartOf="@id/fab_searce"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/constraintLayout3">
+
+        <AutoCompleteTextView
+            android:id="@+id/actv_category"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="none" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

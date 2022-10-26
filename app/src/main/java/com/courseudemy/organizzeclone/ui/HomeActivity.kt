@@ -8,13 +8,17 @@ import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import android.view.View
+import android.widget.ArrayAdapter
+import android.widget.AutoCompleteTextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
+import com.courseudemy.organizzeclone.R
 import com.courseudemy.organizzeclone.databinding.ActivityHomeBinding
 import com.courseudemy.organizzeclone.domain.Transition
 import com.courseudemy.organizzeclone.domain.TypeTransition
 import com.courseudemy.organizzeclone.helper.DateCustom
+import com.courseudemy.organizzeclone.model.ListItemCategory
 import com.courseudemy.organizzeclone.ui.adapter.TransitionAdapter
 import com.courseudemy.organizzeclone.util.PullDataFirebase
 import com.courseudemy.organizzeclone.util.SaveUserFirebase
@@ -48,13 +52,14 @@ class HomeActivity : AppCompatActivity() {
         supportActionBar?.title = ""
 
         //Conferindo se RecyclerView está vazio ou não
-        emptyTransitions()
+        emptyTransitions(listTransition)
 
         authentication = SettingsFirebase().getFirebaseAuth()
         mDatabase = SettingsFirebase().getFirebaseDataBase()
 
         //Preenchendo as View com informções
         pullData()
+        fillEditText()
         //Função responsável por excluir uma transição.
         swip()
         //Carrega informações para a view ao iniciar
@@ -66,11 +71,11 @@ class HomeActivity : AppCompatActivity() {
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    fun emptyTransitions(){
+    fun emptyTransitions(list:ArrayList<Transition>){
         Handler().postDelayed({
             kotlin.runCatching {
                 adapter.notifyDataSetChanged()
-                if (listTransition.isEmpty()) {
+                if (list.isEmpty()) {
                     binding.rvTransitions.removeAllViews()
                     binding.tvNoTransitions.visibility = View.VISIBLE
                     binding.ivNoTransitions.visibility = View.VISIBLE
@@ -86,6 +91,10 @@ class HomeActivity : AppCompatActivity() {
     private fun clicksViews() {
         binding.ivLogo.setOnClickListener {
             startActivity(Intent(this, this::class.java))
+        }
+
+        binding.actvCategory.setOnItemClickListener { parent, view, position, id ->
+            searceCategory()
         }
 
         binding.ivExit.setOnClickListener {
@@ -105,10 +114,30 @@ class HomeActivity : AppCompatActivity() {
                     )
                     binding.tvDate.text = DateCustom().monthAndYearView(datePicker.headerText)
                     binding.tvDate.visibility = View.VISIBLE
-                    emptyTransitions()
+                    emptyTransitions(listTransition)
                 }
                 datePicker.show(supportFragmentManager, "DATE_PICKER_TAG")
         }
+    }
+
+    private fun fillEditText(){
+        //Preenche lista de categorias.
+        val adapter = ArrayAdapter(this, R.layout.list_item_til, R.id.tv_item, ListItemCategory.itemsProfit() + ListItemCategory.itemsExpense())
+        (binding.chipSourceCategory.editText as? AutoCompleteTextView)?.setAdapter(adapter)
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    fun searceCategory(){
+        val listCategory = arrayListOf<Transition>()
+        listTransition.forEach {
+            if (it.category == binding.chipSourceCategory.editText?.text.toString()){
+                listCategory.add(it)
+            }
+            //Essa função confere se lista está vazia.
+            emptyTransitions(listCategory)
+        }
+        binding.rvTransitions.adapter = TransitionAdapter(listCategory)
+        adapter.notifyDataSetChanged()
     }
 
     private fun loadInfo() {
@@ -122,7 +151,7 @@ class HomeActivity : AppCompatActivity() {
                 binding.rvTransitions.adapter = adapter
                 Log.i("START", "EVENTO ADICIONADO!")
                 pullData()
-                emptyTransitions()
+                emptyTransitions(listTransition)
             }
         }, 500)
     }
