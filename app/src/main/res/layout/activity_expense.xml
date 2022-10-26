@@ -88,15 +88,16 @@
         android:layout_height="wrap_content"
         android:hint="Data"
         android:layout_margin="@dimen/fab_margin"
-        app:helperText="Ex:18/10/2022"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/til_expense_desc">
 
         <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/tiet_date"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="date"/>
+            android:inputType="none"
+            android:focusable="false"/>
 
     </com.google.android.material.textfield.TextInputLayout>
 

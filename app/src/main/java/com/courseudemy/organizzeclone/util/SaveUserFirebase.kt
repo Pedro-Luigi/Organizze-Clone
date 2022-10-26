@@ -1,5 +1,6 @@
 package com.courseudemy.organizzeclone.util
 
+import android.annotation.SuppressLint
 import com.courseudemy.organizzeclone.domain.SaveUserDB
 import com.courseudemy.organizzeclone.domain.Transition
 import com.courseudemy.organizzeclone.helper.DateCustom
@@ -7,8 +8,8 @@ import com.courseudemy.organizzeclone.helper.DateCustom
 class SaveUserFirebase {
     private val firebase = SettingsFirebase().getFirebaseDataBase()
 
-    fun saveUser(name: String, email: String){
-        val newUser = SaveUserDB(email= email, name = name, 0.0,0.0)
+    fun saveUser(name: String, email: String) {
+        val newUser = SaveUserDB(email = email, name = name, 0.0, 0.0)
         //Salvando as informações do usuário.
         firebase.child("usuarios")
             //Estou pegando o uid do usuário e atribuindo a sua chave no firebase e salvando seu email e nome.
@@ -16,7 +17,7 @@ class SaveUserFirebase {
             .setValue(newUser)
     }
 
-    fun saveTransition(transition: Transition){
+    fun saveTransition(transition: Transition) {
         val newTransition = Transition(
             transition.category,
             transition.description,
@@ -31,10 +32,16 @@ class SaveUserFirebase {
             .setValue(newTransition)
     }
 
-    fun saveValue(type: String, value: Double?){
+    fun saveValue(type: String, value: Double?) {
         firebase.child("usuarios")
             .child(SettingsFirebase().getFirebaseAuth()?.uid.toString())
             .child(type)
             .setValue(value)
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    fun deleteValueTransition(date: String, key: String) {
+        firebase.child("movimentacao").child(SettingsFirebase().getFirebaseAuth()?.uid.toString())
+            .child(DateCustom().monthAndYear(date)).child(key).removeValue()
     }
 }

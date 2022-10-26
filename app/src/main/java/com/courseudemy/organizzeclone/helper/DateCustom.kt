@@ -1,24 +1,21 @@
 package com.courseudemy.organizzeclone.helper
 
-import android.annotation.SuppressLint
-import android.icu.text.SimpleDateFormat
+import com.courseudemy.organizzeclone.ui.HomeActivity
 
 class DateCustom {
-
-    @SuppressLint("SimpleDateFormat")
-    fun dateNow(): String {
-        val date = System.currentTimeMillis()
-        val simpleDateFormat = SimpleDateFormat("dd/MM/yyyy")
-        return simpleDateFormat.format(date).toString()
-    }
-
-    //Vou pegar a data que o usuário me passar e clarar apenas mês e ano.
+    //Vou pegar a data que o usuário me passar e declarar apenas mês e ano, para o FIREBASE.
     fun monthAndYear(date:String): String {
-        val returnDate = date.split("/")
+        val returnDate = date.split(" de ")
         val month = returnDate[1]
         val year = returnDate[2]
-
         return month+year
     }
 
+    //Vou exibir na tela a data sem ela estar juntas!
+    fun monthAndYearView(date:String): String {
+        val returnDate = date.split(" de ")
+        val month = returnDate[1]
+        val year = returnDate[2]
+        return "${month.uppercase()} $year"
+    }
 }

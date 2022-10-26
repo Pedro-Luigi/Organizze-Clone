@@ -1,77 +1,91 @@
 package com.courseudemy.organizzeclone.ui
 
+import android.annotation.SuppressLint
 import android.content.Intent
+import android.icu.text.DecimalFormat
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
-import android.widget.Toast
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import androidx.navigation.findNavController
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.navigateUp
-import androidx.navigation.ui.setupActionBarWithNavController
-import com.courseudemy.organizzeclone.R
+import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.RecyclerView
 import com.courseudemy.organizzeclone.databinding.ActivityHomeBinding
 import com.courseudemy.organizzeclone.domain.Transition
-import com.courseudemy.organizzeclone.domain.User
-import com.courseudemy.organizzeclone.model.ListItemCategory
+import com.courseudemy.organizzeclone.domain.TypeTransition
+import com.courseudemy.organizzeclone.helper.DateCustom
+import com.courseudemy.organizzeclone.ui.adapter.TransitionAdapter
 import com.courseudemy.organizzeclone.util.PullDataFirebase
 import com.courseudemy.organizzeclone.util.SaveUserFirebase
 import com.courseudemy.organizzeclone.util.SettingsFirebase
+import com.google.android.material.datepicker.MaterialDatePicker
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.ValueEventListener
 
 class HomeActivity : AppCompatActivity() {
 
-    private lateinit var appBarConfiguration: AppBarConfiguration
-    private lateinit var binding: ActivityHomeBinding
+    private val binding by lazy { ActivityHomeBinding.inflate(layoutInflater) }
     private var authentication: FirebaseAuth? = null
     private var mDatabase: DatabaseReference? = null
-    private val TAG = "ERROR"
-    companion object{
-        var name:String? =null
-        var allExpense:Double? = null
-        var allProfit:Double? = null
+    private var generalValue = "0.00"
+
+    companion object {
+        var name: String = ""
+        var allExpense: String = ""
+        var allProfit: String = ""
+        val listTransition = arrayListOf<Transition>()
+        val adapter by lazy { TransitionAdapter(listTransition) }
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        binding = ActivityHomeBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         setSupportActionBar(binding.toolbar)
+        supportActionBar?.title = ""
 
-        val navController = findNavController(R.id.nav_host_fragment_content_home)
-        appBarConfiguration = AppBarConfiguration(navController.graph)
-        setupActionBarWithNavController(navController, appBarConfiguration)
+        //Conferindo se RecyclerView está vazio ou não
+        emptyTransitions()
 
-//        binding.fabAction.setOnClickListener { view ->
-//            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                .setAction("Action", null).show()
-//
-//            authentication = SettingsFirebase().getFirebaseAuth()
-//            //TODO Mudar daqui.
-//
-////                    authentication?.signOut()
-//        }
         authentication = SettingsFirebase().getFirebaseAuth()
         mDatabase = SettingsFirebase().getFirebaseDataBase()
 
-        //Ouvindo dados do firebase.
-//        getDataFirebase()
+        //Preenchendo as View com informções
+        pullData()
+        //Função responsável por excluir uma transição.
+        swip()
+        //Carrega informações para a view ao iniciar
+        loadInfo()
+        //Abre telas de despesa e lucro
+        openActionScreen()
+        //Configura clique nas visualizações.
+        clicksViews()
+    }
 
-        //Soó funciona se eu clicar em uma view! Merda.
-        binding.teste.setOnClickListener {
-            PullDataFirebase().getAllProfit("name")
-            PullDataFirebase().getAllProfit("allProfit")
-            PullDataFirebase().getAllProfit("allExpense")
-            binding.teste.text = allProfit.toString()
-            binding.teste2.text = allExpense.toString()
-            binding.toolbar.title = "Olá, $name"
-            binding.teste.text = allProfit?.minus(allExpense!!).toString()
+    @SuppressLint("NotifyDataSetChanged")
+    fun emptyTransitions(){
+        Handler().postDelayed({
+            kotlin.runCatching {
+                adapter.notifyDataSetChanged()
+                if (listTransition.isEmpty()) {
+                    binding.rvTransitions.removeAllViews()
+                    binding.tvNoTransitions.visibility = View.VISIBLE
+                    binding.ivNoTransitions.visibility = View.VISIBLE
+                } else {
+                    binding.tvNoTransitions.visibility = View.GONE
+                    binding.ivNoTransitions.visibility = View.GONE
+                }
+            }
+        }, 200)
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    private fun clicksViews() {
+        binding.ivLogo.setOnClickListener {
+            startActivity(Intent(this, this::class.java))
         }
 
         binding.ivExit.setOnClickListener {
@@ -79,64 +93,133 @@ class HomeActivity : AppCompatActivity() {
             startActivity(Intent(this, LoginActivity::class.java))
             finish()
         }
-        openActionScreen()
 
+        binding.fabSearce.setOnClickListener {
+                val datePicker = MaterialDatePicker.Builder.datePicker()
+                    .setSelection(MaterialDatePicker.todayInUtcMilliseconds())
+                    .setInputMode(MaterialDatePicker.INPUT_MODE_CALENDAR)
+                    .build()
+                datePicker.addOnPositiveButtonClickListener {
+                    PullDataFirebase().listenerTransitionsWithDate(
+                        DateCustom().monthAndYear(datePicker.headerText)
+                    )
+                    binding.tvDate.text = DateCustom().monthAndYearView(datePicker.headerText)
+                    binding.tvDate.visibility = View.VISIBLE
+                    emptyTransitions()
+                }
+                datePicker.show(supportFragmentManager, "DATE_PICKER_TAG")
+        }
     }
 
-    //TODO SE DER CERTO, coloque a responsabilidade para a classe
-    private fun getDataFirebase(){
-            val firebase = mDatabase!!.child("usuarios").child(authentication?.uid.toString())
-            mDatabase!!.addValueEventListener(object : ValueEventListener {
-                override fun onDataChange(dataSnapshot: DataSnapshot) {
-                    dataSnapshot.value
+    private fun loadInfo() {
+        Handler().postDelayed({
+            kotlin.run {
+                PullDataFirebase().getAllValues("name")
+                PullDataFirebase().getAllValues("allProfit")
+                PullDataFirebase().getAllValues("allExpense")
+                //listando transições e recuperando key de movimentação do firebase
+                PullDataFirebase().listenerTransitions()
+                binding.rvTransitions.adapter = adapter
+                Log.i("START", "EVENTO ADICIONADO!")
+                pullData()
+                emptyTransitions()
+            }
+        }, 500)
+    }
+
+    fun swip() {
+        val itemTouch: ItemTouchHelper.Callback =
+            object : ItemTouchHelper.Callback() {
+                override fun getMovementFlags(
+                    recyclerView: RecyclerView,
+                    viewHolder: RecyclerView.ViewHolder
+                ): Int {
+                    //Faz com que o movimento DragAndDrop esteja inativo, apenas para os lados.
+                    val dragFlag = ItemTouchHelper.ACTION_STATE_IDLE
+                    val swipeFlags = ItemTouchHelper.END
+                    return makeMovementFlags(dragFlag, swipeFlags)
                 }
 
-                override fun onCancelled(error: DatabaseError) {
-                    Toast.makeText(
-                        this@HomeActivity,
-                        "Failed to read value. ${error.toException()}",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                override fun onMove(
+                    recyclerView: RecyclerView,
+                    viewHolder: RecyclerView.ViewHolder,
+                    target: RecyclerView.ViewHolder
+                ): Boolean {
+                    return false
                 }
-            })
 
-            //Busca nome do usuário.
-            firebase.child("name").get().addOnSuccessListener {
-                binding.toolbar.title = "Olá, ${it.value.toString()}"
-            }.addOnFailureListener {
-                Log.w(TAG, "Failed to read value.", error(it))
+                @SuppressLint("NotifyDataSetChanged")
+                override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                    deleteTransition(viewHolder)
+                }
             }
-
-            //Busca gasto total do usuário.
-            firebase.child("allExpense").get().addOnSuccessListener {
-                binding.teste.text = it.value.toString()
-                allExpense = it.value.toString().toDouble()
-            }.addOnFailureListener {
-                Log.w(TAG, "Failed to read value.", error(it))
-            }
-
-            //Busca lucro total do usuário.
-            firebase.child("allProfit").get().addOnSuccessListener {
-                binding.teste2.text = it.value.toString()
-                allProfit = it.value.toString().toDouble()
-            }.addOnFailureListener {
-                Log.w(TAG, "Failed to read value.", error(it))
-            }
-
+        ItemTouchHelper(itemTouch).attachToRecyclerView(binding.rvTransitions)
     }
 
-    override fun onSupportNavigateUp(): Boolean {
-        val navController = findNavController(R.id.nav_host_fragment_content_home)
-        return navController.navigateUp(appBarConfiguration)
-                || super.onSupportNavigateUp()
+    @SuppressLint("NotifyDataSetChanged")
+    fun deleteTransition(viewHolder: RecyclerView.ViewHolder) {
+        //Abre um AlertDialog
+        MaterialAlertDialogBuilder(this)
+            .setTitle("Excluir movimentação")
+            .setMessage("Você tem certeza que deseja excluir movimentação?")
+            .setCancelable(false)
+            .setNegativeButton("Cancelar") { dialog, which ->
+                adapter.notifyDataSetChanged()
+            }
+            .setPositiveButton("Confirmar") { dialog, which ->
+                val position = viewHolder.adapterPosition
+                val transition = listTransition[position]
+                SaveUserFirebase().deleteValueTransition(transition.date, transition.key)
+                adapter.notifyItemRemoved(position)
+                if (transition.type == TypeTransition.PROFIT.toString()) {
+                    allProfit = (allProfit.toDouble().minus(transition.value)).toString()
+                    mDatabase!!.child("usuarios").child(authentication?.uid.toString())
+                        .child("allProfit").setValue(allProfit)
+                    pullData()
+                }
+                if (transition.type == TypeTransition.EXPENSE.toString()) {
+                    allExpense = (allExpense.toDouble().minus(transition.value)).toString()
+                    mDatabase!!.child("usuarios").child(authentication?.uid.toString())
+                        .child("allExpense").setValue(allExpense)
+                    pullData()
+                }
+                pullData()
+            }
+            .show()
     }
 
-    fun openActionScreen(){
+    @SuppressLint("SetTextI18n", "NotifyDataSetChanged")
+    private fun pullData() {
+        binding.tvUserName.text = "Olá, $name"
+        if (allProfit.isNotEmpty() && allExpense.isNotEmpty()) {
+            generalValue = (allProfit.toDouble().minus(allExpense.toDouble()).convert())
+            binding.tvBalance.text = generalValue
+            adapter.notifyDataSetChanged()
+            binding.progressCircular.visibility = View.GONE
+        } else {
+            binding.progressCircular.visibility = View.VISIBLE
+            loadInfo()
+        }
+    }
+
+    private fun Double.convert(): String {
+        val format = DecimalFormat("#,##0.00")
+        format.isDecimalSeparatorAlwaysShown = false
+        return format.format(this).toString()
+    }
+
+    private fun openActionScreen() {
         binding.fabProfit.setOnClickListener {
             startActivity(Intent(this, ProfitActivity::class.java))
         }
         binding.fabExpense.setOnClickListener {
             startActivity(Intent(this, ExpenseActivity::class.java))
         }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        Log.i("onStop", "EVENTO REMOVIDO!")
+        PullDataFirebase().stopListener()
     }
 }

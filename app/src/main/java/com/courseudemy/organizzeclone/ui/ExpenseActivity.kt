@@ -1,5 +1,7 @@
 package com.courseudemy.organizzeclone.ui
 
+import android.annotation.SuppressLint
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.ArrayAdapter
@@ -10,10 +12,10 @@ import com.courseudemy.organizzeclone.R
 import com.courseudemy.organizzeclone.databinding.ActivityExpenseBinding
 import com.courseudemy.organizzeclone.domain.Transition
 import com.courseudemy.organizzeclone.domain.TypeTransition
-import com.courseudemy.organizzeclone.helper.DateCustom
 import com.courseudemy.organizzeclone.model.ListItemCategory
 import com.courseudemy.organizzeclone.util.PullDataFirebase
 import com.courseudemy.organizzeclone.util.SaveUserFirebase
+import com.google.android.material.datepicker.MaterialDatePicker
 
 class ExpenseActivity : AppCompatActivity() {
 
@@ -29,7 +31,23 @@ class ExpenseActivity : AppCompatActivity() {
         //Inicia os editText com valores.
         fillEditText()
         //Escuta qual é o valor atual de allExpense no firebase
-        PullDataFirebase().getAllProfit("allExpense")
+        PullDataFirebase().getAllValues("allExpense")
+        //Função de cliques
+        clickViews()
+    }
+
+    @SuppressLint("SetTextI18n")
+    fun clickViews(){
+        binding.tietDate.setOnClickListener{
+            val datePicker = MaterialDatePicker.Builder.datePicker()
+                .setSelection(MaterialDatePicker.todayInUtcMilliseconds())
+                .setInputMode(MaterialDatePicker.INPUT_MODE_CALENDAR)
+                .build()
+            datePicker.addOnPositiveButtonClickListener {
+                  binding.tilExpenseDate.editText?.setText(datePicker.headerText)
+            }
+            datePicker.show(supportFragmentManager, "DATE_PICKER_TAG")
+        }
 
         binding.fabConfirmExpense.setOnClickListener {
             validateFields(binding.edtExpense)
@@ -41,8 +59,7 @@ class ExpenseActivity : AppCompatActivity() {
     }
 
     private fun fillEditText(){
-        binding.tilExpenseDate.editText?.setText(DateCustom().dateNow())
-        val adapter = ArrayAdapter(this, R.layout.list_item_til, R.id.tv_item, ListItemCategory.items())
+        val adapter = ArrayAdapter(this, R.layout.list_item_til, R.id.tv_item, ListItemCategory.itemsExpense())
         (binding.tilCategory.editText as? AutoCompleteTextView)?.setAdapter(adapter)
     }
 
@@ -69,6 +86,11 @@ class ExpenseActivity : AppCompatActivity() {
         if (value && category && desc && date &&
             binding.edtExpense.text.toString().toDouble() > 0 ){
             saveProfit()
+            PullDataFirebase().getAllValues("name")
+            PullDataFirebase().getAllValues("allProfit")
+            PullDataFirebase().getAllValues("allExpense")
+            startActivity(Intent(this, HomeActivity::class.java))
+            finish()
         } else {
             Toast.makeText(this, "Preencha os campos em vermelho ou adicone um valor acima de 0.", Toast.LENGTH_SHORT).show()
         }
@@ -76,8 +98,8 @@ class ExpenseActivity : AppCompatActivity() {
 
     private fun saveProfit(){
         val transition = Transition(
-            value = binding.edtExpense.text.toString().toDouble(),
             category = binding.tilCategory.editText?.text.toString(),
+            value = binding.edtExpense.text.toString().toDouble(),
             description = binding.tilExpenseDesc.editText?.text.toString(),
             date = binding.tilExpenseDate.editText?.text.toString(),
             type = TypeTransition.EXPENSE.toString()

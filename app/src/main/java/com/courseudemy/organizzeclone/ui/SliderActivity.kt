@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.helper.widget.Carousel
 import com.courseudemy.organizzeclone.R
 import com.courseudemy.organizzeclone.databinding.ActivitySliderBinding
+import com.courseudemy.organizzeclone.util.PullDataFirebase
 import com.courseudemy.organizzeclone.util.SettingsFirebase
 import com.google.firebase.auth.FirebaseAuth
 
